@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "excavationfabric",
+  "version": "${version}",
+
+  "name": "Excavation",
+  "description": "Simple ore excavation mod for 1.16",
+  "authors": [
+    "_Bloop"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/excavation",
+    "sources": "https://github.com/bloop428/Excavation"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/modid/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "bloop.excavationfabric.Excavation"
+    ]
+  },
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}
