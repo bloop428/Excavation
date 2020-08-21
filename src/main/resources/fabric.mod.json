@@ -13,8 +13,7 @@
     "sources": "https://github.com/bloop428/Excavation"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "license": "LGPLv3",
 
   "environment": "*",
   "entrypoints": {
