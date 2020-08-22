@@ -1,19 +1,33 @@
 package bloop.excavationfabric;
 
-import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.options.StickyKeyBinding;
-import net.minecraft.text.LiteralText;
-import org.lwjgl.glfw.GLFW;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.minecraft.util.Identifier;
 
-public class Excavation implements ModInitializer, ClientModInitializer {
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+public class Excavation implements ModInitializer {
+
+    public static final Identifier EXCAVATE_PRESSED_PACKET_ID = new Identifier("excavationfabric", "excavate");
+    public static Set<UUID> playersWithButtonDown = new HashSet<>();
 
     @Override
     public void onInitialize() {
+
+        ServerSidePacketRegistry.INSTANCE.register(EXCAVATE_PRESSED_PACKET_ID, (packetContext, attatchedData) -> {
+            boolean pressed = attatchedData.readBoolean();
+
+            packetContext.getTaskQueue().execute(() -> {
+                if(pressed) {
+                    addPlayer(packetContext.getPlayer().getUuid());
+                } else {
+                    removePlayer(packetContext.getPlayer().getUuid());
+                }
+            });
+        });
 
         //Break block event
         PlayerBlockBreakEvents.BEFORE.register(((world, playerEntity, blockPos, blockState, blockEntity) -> {
@@ -21,14 +35,11 @@ public class Excavation implements ModInitializer, ClientModInitializer {
         }));
     }
 
-    @Override
-    public void onInitializeClient() {
-        KeyBinding excavate = KeyBindingHelper.registerKeyBinding(new StickyKeyBinding("key.excavation.excavate", GLFW.GLFW_KEY_GRAVE_ACCENT, "category.excavation.excavation", () -> true));
+    public static void addPlayer(UUID uuid) {
+        playersWithButtonDown.add(uuid);
+    }
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if(excavate.isPressed()) {
-                client.player.sendMessage(new LiteralText("Yeet"), false);
-            }
-        });
+    public static void removePlayer(UUID uuid) {
+        playersWithButtonDown.remove(uuid);
     }
 }

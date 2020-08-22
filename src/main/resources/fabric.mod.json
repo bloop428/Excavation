@@ -19,6 +19,9 @@
   "entrypoints": {
     "main": [
       "bloop.excavationfabric.Excavation"
+    ],
+    "client": [
+      "bloop.excavationfabric.KeyBindings"
     ]
   },
 
